@@ -22,29 +22,43 @@
 
   <Commands package="guidGitCommandPackage">
     <Groups>
-      <Group guid="guidGitCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="solutionGitCommandPackageCmdSet" id="SolutionMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
+      </Group>
+	  <Group guid="projectGitCommandPackageCmdSet" id="ProjectMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
       </Group>
     </Groups>
 
     <Buttons>
-      <Button guid="guidGitCommandPackageCmdSet" id="GitCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidGitCommandPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="solutionGitCommandPackageCmdSet" id="StartAllGitFilesCommandId" priority="0x0100" type="Button">
+        <Parent guid="solutionGitCommandPackageCmdSet" id="SolutionMenuGroup" />
         <Strings>
           <ButtonText>Start all git files</ButtonText>
         </Strings>
       </Button>
+	  <Button guid="projectGitCommandPackageCmdSet" id="StartGitFilesInProjectCommandId" priority="0x0100" type="Button">
+        <Parent guid="projectGitCommandPackageCmdSet" id="ProjectMenuGroup" />
+        <Strings>
+          <ButtonText>Start all git files in project</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
   </Commands>
-
+		
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidGitCommandPackage" value="{dcd1c95b-7b59-40ed-9f8f-1da2f0e5c386}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidGitCommandPackageCmdSet" value="{3025a1db-e889-4caa-ad24-006760fbb4f9}">
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="GitCommandId" value="0x0100" />
+    <GuidSymbol name="solutionGitCommandPackageCmdSet" value="{3025a1db-e889-4caa-ad24-006760fbb4f9}">
+      <IDSymbol name="SolutionMenuGroup" value="0x1020" />
+      <IDSymbol name="StartAllGitFilesCommandId" value="0x0100" />
+    </GuidSymbol>
+	  
+	<GuidSymbol name="projectGitCommandPackageCmdSet" value="{3025a1db-e899-3caa-ad24-006760fbb4f8}">
+      <IDSymbol name="ProjectMenuGroup" value="0x1020" />
+      <IDSymbol name="StartGitFilesInProjectCommandId" value="0x0101" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{7c97e2e8-2cb4-4448-9e91-68eb2228d5a6}" >

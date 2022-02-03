@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GitFile
@@ -22,8 +23,16 @@ namespace GitFile
 
             DTE dte = Package.GetGlobalService(typeof(SDTE)) as DTE;
             DTE2 dte2 = (DTE2)dte;
-            var p = new System.Diagnostics.Process();
             string line;
+            string output;
+            string outputErrors;
+            var p = new System.Diagnostics.Process();
+
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.FileName = "cmd.exe";
+            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardError = true;
 
             using (StreamReader sr = new StreamReader(filePath))
             {
@@ -38,26 +47,45 @@ namespace GitFile
                             CommandTitle = line.Replace(".", "");
                             CommandLine = CommandTitle + " ";
                         }
-                        else
+                        else if (IsContainsComment(line))
                         {
-                            CommandLine += line;
+                            line = DeleteComments(line);
 
-                            p.StartInfo.UseShellExecute = false;
-                            p.StartInfo.FileName = "cmd.exe";
-                            p.StartInfo.Arguments = "/C " + CommandLine;
-                            p.StartInfo.CreateNoWindow = true;
-                            p.StartInfo.RedirectStandardOutput = true;
-                            p.Start();
-
-                            string output = p.StandardOutput.ReadToEnd();
-
-                            dte2.ToolWindows.CommandWindow.OutputString(output);
-
-                            CommandLine = CommandTitle + " ";
+                            if (line.Any(a => char.IsLetter(a)))
+                                ExecuteCommand();
                         }
+                        else ExecuteCommand();
                     }
                 }
             }
+
+            void ExecuteCommand()
+            {
+                CommandLine += line;
+                p.StartInfo.Arguments = "/C " + CommandLine;
+                p.Start();
+
+                output = p.StandardOutput.ReadToEnd();
+                outputErrors = p.StandardError.ReadToEnd();
+
+                dte2.ToolWindows.CommandWindow.OutputString(string.IsNullOrWhiteSpace(output) ? outputErrors : output);
+                CommandLine = CommandTitle + " ";
+            }
+        }
+
+        private static bool IsContainsComment(string line)
+        {
+            return line.Contains("<") && line.Contains(">");
+        }
+
+        private static string DeleteComments(string line)
+        {
+            foreach (Match match in Regex.Matches(line, "<(.*?)>"))
+            {
+                line = line.Replace(match.Value, "");
+            }
+
+            return line;
         }
     }
 }

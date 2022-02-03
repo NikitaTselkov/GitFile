@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--  This is the file that defines the actual layout and type of the commands.
+        It is divided in different sections (e.g. command definition, command
+        placement, ...), with each defining a specific set of properties.
+        See the comment before each section for more details about how to
+        use it. -->
+
+  <!--  The VSCT compiler (the tool that translates this file into the binary
+        format that VisualStudio will consume) has the ability to run a preprocessor
+        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
+        it is possible to define includes and macros with the same syntax used
+        in C++ files. Using this ability of the compiler here, we include some files
+        defining some of the constants that we will use inside the file. -->
+
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h"/>
+
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidGitCommandPackage">
+    <Groups>
+      <Group guid="guidGitCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <Button guid="guidGitCommandPackageCmdSet" id="GitCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidGitCommandPackageCmdSet" id="MyMenuGroup" />
+        <Strings>
+          <ButtonText>Start all git files</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="guidGitCommandPackage" value="{dcd1c95b-7b59-40ed-9f8f-1da2f0e5c386}" />
+
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="guidGitCommandPackageCmdSet" value="{3025a1db-e889-4caa-ad24-006760fbb4f9}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="GitCommandId" value="0x0100" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{7c97e2e8-2cb4-4448-9e91-68eb2228d5a6}" >
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>

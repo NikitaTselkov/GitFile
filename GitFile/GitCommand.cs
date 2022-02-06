@@ -22,12 +22,14 @@ namespace GitFile
         /// </summary>
         public const int StartAllGitFilesCommandId = 0x0100;
         public const int StartGitFilesInProjectCommandId = 0x0101;
+        public const int StartGitFileCommandId = 0x0102;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid SolutionCommandSet = new Guid("3025a1db-e889-4caa-ad24-006760fbb4f9");
         public static readonly Guid ProjectCommandSet = new Guid("3025a1db-e899-3caa-ad24-006760fbb4f8");
+        public static readonly Guid FileCommandSet = new Guid("3025b1db-e599-7caa-ad14-006760fbb4f7");
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -56,6 +58,30 @@ namespace GitFile
             var menuProjectCommandID = new CommandID(ProjectCommandSet, StartGitFilesInProjectCommandId);
             var menuProjectItem = new MenuCommand(this.StartGitFilesInProject, menuProjectCommandID);
             commandService.AddCommand(menuProjectItem);
+
+            var menuFileCommandID = new CommandID(FileCommandSet, StartGitFileCommandId);
+            var menuFileItem = new OleMenuCommand(this.StartGitFile, menuFileCommandID);
+
+            menuFileItem.BeforeQueryStatus += BeforeQueryStatusCallback;
+
+            commandService.AddCommand(menuFileItem);
+        }
+
+        private void BeforeQueryStatusCallback(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var projectItem = GetSelectedSolutionExplorerItem().Object as ProjectItem;
+
+            if (projectItem != null)
+            {
+                var name = projectItem.Document.Name;
+                var omc = (OleMenuCommand)sender;
+
+                if (name.Contains(".git"))
+                    omc.Visible = true;
+                else
+                    omc.Visible = false;
+            }
         }
 
         /// <summary>
@@ -95,18 +121,35 @@ namespace GitFile
             ThreadHelper.ThrowIfNotOnUIThread();
             var path = Path.GetDirectoryName(dte.Solution.FullName);
 
-            foreach (var filePath in Directory.EnumerateFiles(path, "*.git", SearchOption.AllDirectories))
-            {
-                GitCompiler.StartGitFile(filePath);
-            }
+            StartGitFiles(path);
         }
 
         private void StartGitFilesInProject(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var project = GetSelectedSolutionExplorerItem()?.Object as Project;
-            var path = Path.GetDirectoryName(project.FullName);
 
+            if (project != null)
+            {
+                var path = Path.GetDirectoryName(project.FullName);
+                StartGitFiles(path);
+            }
+        }
+
+        private void StartGitFile(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var projectItem = GetSelectedSolutionExplorerItem().Object as ProjectItem;
+
+            if (projectItem != null)
+            {
+                var path = projectItem.Document.FullName;
+                GitCompiler.StartGitFile(path);
+            }
+        }
+
+        private void StartGitFiles(string path)
+        {
             foreach (var filePath in Directory.EnumerateFiles(path, "*.git", SearchOption.AllDirectories))
             {
                 GitCompiler.StartGitFile(filePath);

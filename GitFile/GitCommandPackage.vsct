@@ -22,12 +22,15 @@
 
   <Commands package="guidGitCommandPackage">
     <Groups>
-      <Group guid="solutionGitCommandPackageCmdSet" id="SolutionMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
-      </Group>
-	  <Group guid="projectGitCommandPackageCmdSet" id="ProjectMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
-      </Group>
+		<Group guid="solutionGitCommandPackageCmdSet" id="SolutionMenuGroup" priority="0x0600">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
+		</Group>
+		<Group guid="projectGitCommandPackageCmdSet" id="ProjectMenuGroup" priority="0x0600">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+		</Group>
+		<Group guid="fileGitCommandPackageCmdSet" id="FileMenuGroup" priority="0x0600">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
+		</Group>
     </Groups>
 
     <Buttons>
@@ -43,6 +46,14 @@
           <ButtonText>Start all git files in project</ButtonText>
         </Strings>
       </Button>
+		<Button guid="fileGitCommandPackageCmdSet" id="StartGitFileCommandId" priority="0x0100" type="Button">
+		  <Parent guid="fileGitCommandPackageCmdSet" id="FileMenuGroup" />
+		  <CommandFlag>DefaultInvisible</CommandFlag>
+		  <CommandFlag>DynamicVisibility</CommandFlag>
+		  <Strings>
+			<ButtonText>Start git file</ButtonText>
+		  </Strings>
+		</Button>
     </Buttons>
   </Commands>
 		
@@ -60,6 +71,11 @@
       <IDSymbol name="ProjectMenuGroup" value="0x1020" />
       <IDSymbol name="StartGitFilesInProjectCommandId" value="0x0101" />
     </GuidSymbol>
+
+	<GuidSymbol name="fileGitCommandPackageCmdSet" value="{3025b1db-e599-7caa-ad14-006760fbb4f7}">
+      <IDSymbol name="FileMenuGroup" value="0x1020" />
+      <IDSymbol name="StartGitFileCommandId" value="0x0102" />
+	</GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{7c97e2e8-2cb4-4448-9e91-68eb2228d5a6}" >
     </GuidSymbol>

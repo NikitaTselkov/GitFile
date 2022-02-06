@@ -36,22 +36,31 @@
     <Buttons>
       <Button guid="solutionGitCommandPackageCmdSet" id="StartAllGitFilesCommandId" priority="0x0100" type="Button">
         <Parent guid="solutionGitCommandPackageCmdSet" id="SolutionMenuGroup" />
-        <Strings>
-          <ButtonText>Start all git files</ButtonText>
+        <Strings language="en">
+          <ButtonText>Start all git-files</ButtonText>
         </Strings>
+		<Strings language="ru">
+		  <ButtonText>Запустить все git-файлы</ButtonText>
+		</Strings>
       </Button>
 	  <Button guid="projectGitCommandPackageCmdSet" id="StartGitFilesInProjectCommandId" priority="0x0100" type="Button">
         <Parent guid="projectGitCommandPackageCmdSet" id="ProjectMenuGroup" />
-        <Strings>
-          <ButtonText>Start all git files in project</ButtonText>
+        <Strings language="en">
+          <ButtonText>Start all git-files in project</ButtonText>
         </Strings>
+		<Strings language="ru">
+	      <ButtonText>Запустить все git-файлы в проекте</ButtonText>
+		</Strings>
       </Button>
 		<Button guid="fileGitCommandPackageCmdSet" id="StartGitFileCommandId" priority="0x0100" type="Button">
 		  <Parent guid="fileGitCommandPackageCmdSet" id="FileMenuGroup" />
 		  <CommandFlag>DefaultInvisible</CommandFlag>
 		  <CommandFlag>DynamicVisibility</CommandFlag>
-		  <Strings>
-			<ButtonText>Start git file</ButtonText>
+		  <Strings language="en">
+			<ButtonText>Start git-file</ButtonText>
+		  </Strings>
+		  <Strings language="ru">
+			<ButtonText>Запустить git-файл</ButtonText>
 		  </Strings>
 		</Button>
     </Buttons>

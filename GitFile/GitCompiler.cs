@@ -16,6 +16,7 @@ namespace GitFile
     {
         private static string CommandTitle { get; set; }
         private static string CommandLine { get; set; }
+        private static Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
 
         public static void StartGitFile(string filePath)
         {
@@ -26,51 +27,134 @@ namespace GitFile
             string line;
             string output;
             string outputErrors;
-            var p = new System.Diagnostics.Process();
-
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.RedirectStandardError = true;
+            System.Diagnostics.Process p = InitProcess();
 
             using (StreamReader sr = new StreamReader(filePath))
             {
-                while (!sr.EndOfStream)
+                try
                 {
-                    line = sr.ReadLine().Trim();
-
-                    if (!string.IsNullOrWhiteSpace(line))
+                    while (!sr.EndOfStream)
                     {
-                        if (line.Contains("."))
-                        {
-                            CommandTitle = line.Replace(".", "");
-                            CommandLine = CommandTitle + " ";
-                        }
-                        else if (IsContainsComment(line))
-                        {
-                            line = DeleteComments(line);
+                        line = sr.ReadLine().Trim();
 
-                            if (line.Any(a => char.IsLetter(a)))
-                                ExecuteCommand();
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            if (IsContainsComment(line))
+                            {
+                                line = DeleteComments(line);
+                            }
+                            if (line.FirstOrDefault() == '.')
+                            {
+                                CommandTitle = line.Replace(".", "");
+                                CommandLine = CommandTitle + " ";
+                            }
+                            else if (line.FirstOrDefault() == ':')
+                            {
+                                if (line.Contains(":if"))
+                                {
+
+                                }
+                                else if (line.Contains(":else"))
+                                {
+
+                                }
+                                else
+                                {
+                                    string variable = line.Split(' ').First().Replace(":", "");
+                                    (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
+                                    string commandOutput = ExecuteCommandAndGetOutput(command);
+                                    string value = GetValueFromCommandOutput(commandOutput.Split(' '), range);
+
+                                    SetVariable(variable, value);
+
+                                    dte2.ToolWindows.CommandWindow.OutputString($"{variable} = {value} \n");
+                                }
+                            }
+                            else ExecuteCommandAndOutputResult(line);
                         }
-                        else ExecuteCommand();
                     }
                 }
+                catch (Exception) { }
             }
 
-            void ExecuteCommand()
+            #region ExecuteCommands
+
+            (string output, string outputErrors) ExecuteCommand(string command)
             {
-                CommandLine += line;
+                CommandLine += command;
                 p.StartInfo.Arguments = "/C " + CommandLine;
                 p.Start();
 
                 output = p.StandardOutput.ReadToEnd();
                 outputErrors = p.StandardError.ReadToEnd();
-
-                dte2.ToolWindows.CommandWindow.OutputString(string.IsNullOrWhiteSpace(output) ? outputErrors : output);
                 CommandLine = CommandTitle + " ";
+
+                if (!string.IsNullOrEmpty(outputErrors)) throw new Exception();
+
+                return (output, outputErrors);
             }
+
+            void ExecuteCommandAndOutputResult(string command)
+            {
+                ExecuteCommand(command);
+                dte2.ToolWindows.CommandWindow.OutputString(string.IsNullOrWhiteSpace(output) ? outputErrors : output);
+            }
+
+            string ExecuteCommandAndGetOutput(string command)
+            {
+                ExecuteCommand(command);
+                return output;
+            }
+
+            #endregion
+        }
+
+        private static void SetVariable(string variable, string value)
+        {
+            if (Variables.Keys.Contains(variable))
+                Variables[variable] = value;
+            else
+                Variables.Add(variable, value);
+        }
+
+        private static string GetValueFromCommandOutput(string[] split, int[] range)
+        {
+            string value;
+
+            if (range[1] > 0)
+                value = string.Join(" ", split.Skip(range[0]).Take(range[1]));
+            else
+                value = string.Join(" ", split.Skip(range[0]));
+
+            // Меняем кодировку строки.
+            byte[] bytes = Encoding.Default.GetBytes(value);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        private static (string command, int[] range) GetCommandAndCountWordsFromLine(string line)
+        {
+            string command = string.Empty;
+            int[] range = new int[2] { 0, 0 };
+
+            if (line.Contains("=>"))
+            {
+                var match = Regex.Match(line, "=(.*?)=>");
+                var matchRange = Regex.Match(line, @"\((.*?)\)").Value;
+                var split = matchRange.Replace("(", "").Replace(")", "").Split(',');
+
+                command = match.Value;
+                range[0] = int.Parse(split[0]);
+
+                if (split.Length > 1)
+                    range[1] = int.Parse(split[1]) + 1;
+            }
+            else
+            {
+                command = new string(line.SkipWhile(s => s != '=').ToArray());
+            }
+
+            command = command.Replace("=>", "").Replace("=", "");
+            return (command, range);
         }
 
         private static bool IsContainsComment(string line)
@@ -86,6 +170,18 @@ namespace GitFile
             }
 
             return line;
+        }
+
+        private static System.Diagnostics.Process InitProcess()
+        {
+            var p = new System.Diagnostics.Process();
+
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.FileName = "cmd.exe";
+            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardError = true;
+            return p;
         }
     }
 }

@@ -2,8 +2,10 @@
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using MiscUtil;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,6 +35,8 @@ namespace GitFile
             {
                 try
                 {
+                    var IsIfTrue = false;
+
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine().Trim();
@@ -52,18 +56,35 @@ namespace GitFile
                             {
                                 if (line.Contains(":if"))
                                 {
+                                    var match = Regex.Match(line, @"\((\w*?)\s*(\W*?)\s*(\w*?)\)");
 
+                                    string firstValue = GetVariableValue(match.Groups[1].Value);
+                                    string operatorValue = match.Groups[2].Value;
+                                    string secondValue = GetVariableValue(match.Groups[3].Value);
+                                    var op = ConvertToBinaryConditionOperator<string>(operatorValue);
+
+                                    if (op(firstValue, secondValue))
+                                    {
+                                        line = line.Replace(Regex.Match(line, @":if\s*\((.*?)\)").Value, "");
+                                        ExecuteCommandAndOutputResult(line);
+                                        IsIfTrue = true;
+                                    }
                                 }
                                 else if (line.Contains(":else"))
                                 {
-
+                                    if (!IsIfTrue)
+                                    {
+                                        line = line.Replace(Regex.Match(line, @":else\s*").Value, "");
+                                        ExecuteCommandAndOutputResult(line);
+                                        IsIfTrue = false;
+                                    }
                                 }
                                 else
                                 {
                                     string variable = line.Split(' ').First().Replace(":", "");
                                     (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
                                     string commandOutput = ExecuteCommandAndGetOutput(command);
-                                    string value = GetValueFromCommandOutput(commandOutput.Split(' '), range);
+                                    string value = GetValueFromCommandOutput(commandOutput, range);
 
                                     SetVariable(variable, value);
 
@@ -74,12 +95,12 @@ namespace GitFile
                         }
                     }
                 }
-                catch (Exception) { }
+                catch (Exception ex) { dte2.ToolWindows.CommandWindow.OutputString(ex.Message); }
             }
 
             #region ExecuteCommands
 
-            (string output, string outputErrors) ExecuteCommand(string command)
+            string ExecuteCommand(string command)
             {
                 CommandLine += command;
                 p.StartInfo.Arguments = "/C " + CommandLine;
@@ -89,15 +110,15 @@ namespace GitFile
                 outputErrors = p.StandardError.ReadToEnd();
                 CommandLine = CommandTitle + " ";
 
-                if (!string.IsNullOrEmpty(outputErrors)) throw new Exception();
+                if (!string.IsNullOrEmpty(outputErrors)) throw new Exception(outputErrors);
 
-                return (output, outputErrors);
+                return output;
             }
 
             void ExecuteCommandAndOutputResult(string command)
             {
                 ExecuteCommand(command);
-                dte2.ToolWindows.CommandWindow.OutputString(string.IsNullOrWhiteSpace(output) ? outputErrors : output);
+                dte2.ToolWindows.CommandWindow.OutputString(output);
             }
 
             string ExecuteCommandAndGetOutput(string command)
@@ -109,6 +130,28 @@ namespace GitFile
             #endregion
         }
 
+        public static Func<T, T, bool> ConvertToBinaryConditionOperator<T>(string op)
+        {
+            switch (op)
+            {
+                case "<": return Operator.LessThan<T>;
+                case ">": return Operator.GreaterThan<T>;
+                case "==": return Operator.Equal<T>;
+                case "!=": return Operator.NotEqual<T>;
+                case "<=": return Operator.LessThanOrEqual<T>;
+                case ">=": return Operator.GreaterThanOrEqual<T>;       
+                default: throw new ArgumentException(nameof(op));
+            }
+        }
+
+        private static string GetVariableValue(string variable)
+        {
+            if (Variables.Keys.Contains(variable))
+                return Variables[variable];
+            else
+                return variable;
+        }
+
         private static void SetVariable(string variable, string value)
         {
             if (Variables.Keys.Contains(variable))
@@ -117,9 +160,11 @@ namespace GitFile
                 Variables.Add(variable, value);
         }
 
-        private static string GetValueFromCommandOutput(string[] split, int[] range)
+        private static string GetValueFromCommandOutput(string commandOutput, int[] range)
         {
             string value;
+
+            var split = commandOutput.Replace("\n", "\n ").Split(' ');
 
             if (range[1] > 0)
                 value = string.Join(" ", split.Skip(range[0]).Take(range[1]));
@@ -146,7 +191,7 @@ namespace GitFile
                 range[0] = int.Parse(split[0]);
 
                 if (split.Length > 1)
-                    range[1] = int.Parse(split[1]) + 1;
+                    range[1] = int.Parse(split[1]);
             }
             else
             {

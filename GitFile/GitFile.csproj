@@ -54,6 +54,10 @@
     <Compile Include="GitCommand.cs" />
     <Compile Include="GitCommandPackage.cs" />
     <Compile Include="GitCompiler.cs" />
+    <Compile Include="Methods\AutoIncrement.cs" />
+    <Compile Include="Methods\GitMethod.cs" />
+    <Compile Include="Methods\IGitMethod.cs" />
+    <Compile Include="Methods\Methods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

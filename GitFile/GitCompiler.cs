@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+using GitFile.Methods;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MiscUtil;
@@ -82,9 +83,20 @@ namespace GitFile
                                 else
                                 {
                                     string variable = line.Split(' ').First().Replace(":", "");
-                                    (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
-                                    string commandOutput = ExecuteCommandAndGetOutput(command);
-                                    string value = GetValueFromCommandOutput(commandOutput, range);
+                                    string value = string.Empty;
+
+                                    GitMethod gitMethod = new GitMethod(line);
+
+                                    if (!gitMethod.IsMethod())
+                                    {
+                                        (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
+                                        string commandOutput = ExecuteCommandAndGetOutput(command);
+                                        value = GetValueFromCommandOutput(commandOutput, range);
+                                    }
+                                    else
+                                    {
+                                        value = gitMethod.Start();
+                                    }
 
                                     SetVariable(variable, value);
 

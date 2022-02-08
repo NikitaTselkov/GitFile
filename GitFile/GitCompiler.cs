@@ -48,6 +48,10 @@ namespace GitFile
                             {
                                 line = DeleteComments(line);
                             }
+                            if (IsContainsVariables(line))
+                            {
+                                line = ReplaceVariablesToValue(line);
+                            }
                             if (line.FirstOrDefault() == '.')
                             {
                                 CommandTitle = line.Replace(".", "");
@@ -183,6 +187,8 @@ namespace GitFile
             else
                 value = string.Join(" ", split.Skip(range[0]));
 
+            value = value.Trim('\n');
+
             // Меняем кодировку строки.
             byte[] bytes = Encoding.Default.GetBytes(value);
             return Encoding.UTF8.GetString(bytes);
@@ -217,6 +223,24 @@ namespace GitFile
         private static bool IsContainsComment(string line)
         {
             return line.Contains("<") && line.Contains(">");
+        }
+
+        private static bool IsContainsVariables(string line)
+        {
+            return line.Contains("{") && line.Contains("}");
+        }
+
+        private static string ReplaceVariablesToValue(string line)
+        {
+            var variableName = string.Empty;
+
+            foreach (Match match in Regex.Matches(line, "{(.*?)}"))
+            {
+                variableName = match.Value.Replace("{", "").Replace("}", "");
+                line = line.Replace(match.Value, GetVariableValue(variableName));
+            }
+
+            return line;
         }
 
         private static string DeleteComments(string line)

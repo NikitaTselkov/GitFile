@@ -66,13 +66,26 @@ namespace GitFile
                                     string firstValue = GetVariableValue(match.Groups[1].Value);
                                     string operatorValue = match.Groups[2].Value;
                                     string secondValue = GetVariableValue(match.Groups[3].Value);
-                                    var op = ConvertToBinaryConditionOperator<string>(operatorValue);
 
-                                    if (op(firstValue, secondValue))
+                                    if (operatorValue == "==" || operatorValue == "!=")
+                                    {
+                                        var op = ConvertToBinaryConditionOperator<string>(operatorValue);
+
+                                        if (op(firstValue, secondValue))
+                                            IsIfTrue = true;
+                                    }
+                                    else
+                                    {
+                                        var op = ConvertToBinaryConditionOperator<int>(operatorValue);
+
+                                        if (op(ConvertStringToInt32(firstValue), ConvertStringToInt32(secondValue)))
+                                            IsIfTrue = true;
+                                    }
+
+                                    if (IsIfTrue)
                                     {
                                         line = line.Replace(Regex.Match(line, @":if\s*\((.*?)\)").Value, "");
                                         ExecuteCommandAndOutputResult(line);
-                                        IsIfTrue = true;
                                     }
                                 }
                                 else if (line.Contains(":else"))
@@ -158,6 +171,19 @@ namespace GitFile
                 case ">=": return Operator.GreaterThanOrEqual<T>;       
                 default: throw new ArgumentException(nameof(op));
             }
+        }
+
+        private static int ConvertStringToInt32(string value)
+        {
+            var result = string.Empty;
+
+            foreach (var item in value)
+            {
+                if (char.IsDigit(item))
+                    result += item;
+            }
+
+            return Convert.ToInt32(result);
         }
 
         private static string GetVariableValue(string variable)

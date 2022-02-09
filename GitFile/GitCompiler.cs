@@ -61,7 +61,7 @@ namespace GitFile
                             {
                                 if (line.Contains(":if"))
                                 {
-                                    var match = Regex.Match(line, @"\((\w*?)\s*(\W*?)\s*(\w*?)\)");
+                                    var match = Regex.Match(line, @"\((.*?)\s*(==|!=|>|>=|<|<=)\s*(.*?)\)");
 
                                     string firstValue = GetVariableValue(match.Groups[1].Value);
                                     string operatorValue = match.Groups[2].Value;

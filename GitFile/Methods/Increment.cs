@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace GitFile.Methods
 {
-    public class AutoIncrement : IGitMethod
+    public class Increment : IGitMethod
     {
         private readonly List<string> _params;
         public string Result { get; set; }   
 
-        public AutoIncrement(string param)
+        public Increment(string param)
         {
             _params = param.Split(',').ToList();
             var varsion = _params.FirstOrDefault();

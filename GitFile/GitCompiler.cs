@@ -26,7 +26,8 @@ namespace GitFile
         private static string _output;
         private static string _outputErrors;
         private static System.Diagnostics.Process _process = InitProcess();
-        private static bool IsIfTrue = false;
+        private static bool _isIfTrue = false;
+        private static bool _isNeedIgnorOutput = false;
 
         public static void StartGitFile(string filePath)
         {
@@ -40,6 +41,7 @@ namespace GitFile
                     {
                         line = sr.ReadLine().Trim();
                         GitCompilFile(line);
+                        _isNeedIgnorOutput = false;
                     }
                 }
                 catch (Exception ex) { DisplayText(ex.Message); }
@@ -57,6 +59,11 @@ namespace GitFile
                 if (IsContainsVariables(line))
                 {
                     line = ReplaceVariablesToValue(line);
+                }
+                if (IsNeedIgnorOutput(line))
+                {
+                    line = line.Replace(Regex.Match(line, @"-->\s*Ignor").Value, "");
+                    _isNeedIgnorOutput = true;
                 }
                 if (line.FirstOrDefault() == '.')
                 {
@@ -78,17 +85,17 @@ namespace GitFile
                             var op = ConvertToBinaryConditionOperator<string>(operatorValue);
 
                             if (op(firstValue, secondValue))
-                                IsIfTrue = true;
+                                _isIfTrue = true;
                         }
                         else
                         {
                             var op = ConvertToBinaryConditionOperator<int>(operatorValue);
 
                             if (op(ConvertStringToInt32(firstValue), ConvertStringToInt32(secondValue)))
-                                IsIfTrue = true;
+                                _isIfTrue = true;
                         }
 
-                        if (IsIfTrue)
+                        if (_isIfTrue)
                         {
                             line = line.Replace(Regex.Match(line, @":if\s*\((.*?)\)").Value, "");
 
@@ -100,7 +107,7 @@ namespace GitFile
                     }
                     else if (line.Contains(":else"))
                     {
-                        if (!IsIfTrue)
+                        if (!_isIfTrue)
                         {
                             line = line.Replace(Regex.Match(line, @":else\s*").Value, "");
 
@@ -110,7 +117,7 @@ namespace GitFile
                                 ExecuteCommandAndOutputResult(line);
                         }
 
-                        IsIfTrue = false;
+                        _isIfTrue = false;
                     }
                     else
                     {
@@ -131,29 +138,29 @@ namespace GitFile
                         }
 
                         SetVariable(variable, value);
-
                         DisplayText($"{variable} = {value} \n");
                     }
                 }
                 else ExecuteCommandAndOutputResult(line);
             }
-
-           
         }
 
         #region ExecuteCommands
 
         private static string ExecuteCommand(string command)
         {
-            CommandLine += command;
-            _process.StartInfo.Arguments = "/C " + CommandLine;
-            _process.Start();
+            if (!string.IsNullOrWhiteSpace(command))
+            { 
+                CommandLine += command;
+                _process.StartInfo.Arguments = "/C " + CommandLine;
+                _process.Start();
 
-            _output = _process.StandardOutput.ReadToEnd();
-            _outputErrors = _process.StandardError.ReadToEnd();
-            CommandLine = CommandTitle + " ";
+                _output = _process.StandardOutput.ReadToEnd();
+                _outputErrors = _process.StandardError.ReadToEnd();
+                CommandLine = CommandTitle + " ";
 
-            if (!string.IsNullOrEmpty(_outputErrors)) throw new Exception(_outputErrors);
+                if (!string.IsNullOrEmpty(_outputErrors)) throw new Exception(_outputErrors);
+            }
 
             return _output;
         }
@@ -172,13 +179,7 @@ namespace GitFile
 
         #endregion
 
-        public static void DisplayText(string text)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _dte2.ToolWindows.CommandWindow.OutputString(text);
-        }
-
-        public static Func<T, T, bool> ConvertToBinaryConditionOperator<T>(string op)
+        private static Func<T, T, bool> ConvertToBinaryConditionOperator<T>(string op)
         {
             switch (op)
             {
@@ -190,6 +191,14 @@ namespace GitFile
                 case ">=": return Operator.GreaterThanOrEqual<T>;       
                 default: throw new ArgumentException(nameof(op));
             }
+        }
+
+        private static void DisplayText(string text)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (!_isNeedIgnorOutput)
+                _dte2.ToolWindows.CommandWindow.OutputString(text);
         }
 
         private static int ConvertStringToInt32(string value)
@@ -275,6 +284,11 @@ namespace GitFile
         private static bool IsContainsVariables(string line)
         {
             return line.Contains("{") && line.Contains("}");
+        }
+
+        private static bool IsNeedIgnorOutput(string line)
+        {
+            return Regex.Match(line, @"-->\s*Ignor").Success;
         }
 
         private static string ReplaceVariablesToValue(string line)

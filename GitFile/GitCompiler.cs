@@ -183,6 +183,8 @@ namespace GitFile
                     result += item;
             }
 
+            if (string.IsNullOrEmpty(result)) result = "0";
+
             return Convert.ToInt32(result);
         }
 

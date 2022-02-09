@@ -9,6 +9,8 @@ namespace GitFile.Methods
     public enum Methods
     {
         Null,
-        Increment
+        Increment,
+        Skip,
+        Take
     }
 }

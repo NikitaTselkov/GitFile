@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GitFile.Methods
+{
+    public class Skip : IGitMethod
+    {
+        public List<string> Params { get; }
+        public string Result { get; }
+
+        // Skip(value, count)
+        public Skip(string param)
+        {
+            Params = param.Split(',').ToList();
+            Result = string.Join("", Params.FirstOrDefault()?.Skip(Convert.ToInt32(Params.LastOrDefault())));
+        }
+    }
+}

@@ -8,6 +8,7 @@ namespace GitFile.Methods
 {
     public interface IGitMethod
     {
-        string Result { get; set; }
+        List<string> Params { get; }
+        string Result { get; }
     }
 }

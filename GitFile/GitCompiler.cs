@@ -21,142 +21,161 @@ namespace GitFile
         private static string CommandLine { get; set; }
         private static Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
 
+        private static DTE _dte = Package.GetGlobalService(typeof(SDTE)) as DTE;
+        private static DTE2 _dte2 = (DTE2)_dte;
+        private static string _output;
+        private static string _outputErrors;
+        private static System.Diagnostics.Process _process = InitProcess();
+        private static bool IsIfTrue = false;
+
         public static void StartGitFile(string filePath)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            DTE dte = Package.GetGlobalService(typeof(SDTE)) as DTE;
-            DTE2 dte2 = (DTE2)dte;
             string line;
-            string output;
-            string outputErrors;
-            System.Diagnostics.Process p = InitProcess();
 
             using (StreamReader sr = new StreamReader(filePath))
             {
                 try
                 {
-                    var IsIfTrue = false;
-
                     while (!sr.EndOfStream)
                     {
                         line = sr.ReadLine().Trim();
-
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            if (IsContainsComment(line))
-                            {
-                                line = DeleteComments(line);
-                            }
-                            if (IsContainsVariables(line))
-                            {
-                                line = ReplaceVariablesToValue(line);
-                            }
-                            if (line.FirstOrDefault() == '.')
-                            {
-                                CommandTitle = line.Replace(".", "");
-                                CommandLine = CommandTitle + " ";
-                            }
-                            else if (line.FirstOrDefault() == ':')
-                            {
-                                if (line.Contains(":if"))
-                                {
-                                    var match = Regex.Match(line, @"\((.*?)\s*(==|!=|>|>=|<|<=)\s*(.*?)\)");
-
-                                    string firstValue = GetVariableValue(match.Groups[1].Value);
-                                    string operatorValue = match.Groups[2].Value;
-                                    string secondValue = GetVariableValue(match.Groups[3].Value);
-
-                                    if (operatorValue == "==" || operatorValue == "!=")
-                                    {
-                                        var op = ConvertToBinaryConditionOperator<string>(operatorValue);
-
-                                        if (op(firstValue, secondValue))
-                                            IsIfTrue = true;
-                                    }
-                                    else
-                                    {
-                                        var op = ConvertToBinaryConditionOperator<int>(operatorValue);
-
-                                        if (op(ConvertStringToInt32(firstValue), ConvertStringToInt32(secondValue)))
-                                            IsIfTrue = true;
-                                    }
-
-                                    if (IsIfTrue)
-                                    {
-                                        line = line.Replace(Regex.Match(line, @":if\s*\((.*?)\)").Value, "");
-                                        ExecuteCommandAndOutputResult(line);
-                                    }
-                                }
-                                else if (line.Contains(":else"))
-                                {
-                                    if (!IsIfTrue)
-                                    {
-                                        line = line.Replace(Regex.Match(line, @":else\s*").Value, "");
-                                        ExecuteCommandAndOutputResult(line);
-                                        IsIfTrue = false;
-                                    }
-                                }
-                                else
-                                {
-                                    string variable = line.Split(' ').First().Replace(":", "");
-                                    string value = string.Empty;
-
-                                    GitMethod gitMethod = new GitMethod(line);
-
-                                    if (!gitMethod.IsMethod())
-                                    {
-                                        (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
-                                        string commandOutput = ExecuteCommandAndGetOutput(command);
-                                        value = GetValueFromCommandOutput(commandOutput, range);
-                                    }
-                                    else
-                                    {
-                                        value = gitMethod.Start();
-                                    }
-
-                                    SetVariable(variable, value);
-
-                                    dte2.ToolWindows.CommandWindow.OutputString($"{variable} = {value} \n");
-                                }
-                            }
-                            else ExecuteCommandAndOutputResult(line);
-                        }
+                        GitCompilFile(line);
                     }
                 }
-                catch (Exception ex) { dte2.ToolWindows.CommandWindow.OutputString(ex.Message); }
+                catch (Exception ex) { DisplayText(ex.Message); }
             }
+        }
 
-            #region ExecuteCommands
-
-            string ExecuteCommand(string command)
+        private static void GitCompilFile(string line)
+        {
+            if (!string.IsNullOrWhiteSpace(line))
             {
-                CommandLine += command;
-                p.StartInfo.Arguments = "/C " + CommandLine;
-                p.Start();
+                if (IsContainsComment(line))
+                {
+                    line = DeleteComments(line);
+                }
+                if (IsContainsVariables(line))
+                {
+                    line = ReplaceVariablesToValue(line);
+                }
+                if (line.FirstOrDefault() == '.')
+                {
+                    CommandTitle = line.Replace(".", "");
+                    CommandLine = CommandTitle + " ";
+                }
+                else if (line.FirstOrDefault() == ':')
+                {
+                    if (line.Contains(":if"))
+                    {
+                        var match = Regex.Match(line, @"\((.*?)\s*(==|!=|>|>=|<|<=)\s*(.*?)\)");
 
-                output = p.StandardOutput.ReadToEnd();
-                outputErrors = p.StandardError.ReadToEnd();
-                CommandLine = CommandTitle + " ";
+                        string firstValue = GetVariableValue(match.Groups[1].Value);
+                        string operatorValue = match.Groups[2].Value;
+                        string secondValue = GetVariableValue(match.Groups[3].Value);
 
-                if (!string.IsNullOrEmpty(outputErrors)) throw new Exception(outputErrors);
+                        if (operatorValue == "==" || operatorValue == "!=")
+                        {
+                            var op = ConvertToBinaryConditionOperator<string>(operatorValue);
 
-                return output;
+                            if (op(firstValue, secondValue))
+                                IsIfTrue = true;
+                        }
+                        else
+                        {
+                            var op = ConvertToBinaryConditionOperator<int>(operatorValue);
+
+                            if (op(ConvertStringToInt32(firstValue), ConvertStringToInt32(secondValue)))
+                                IsIfTrue = true;
+                        }
+
+                        if (IsIfTrue)
+                        {
+                            line = line.Replace(Regex.Match(line, @":if\s*\((.*?)\)").Value, "");
+
+                            if (line.Contains(":")) 
+                                GitCompilFile(line.Trim());
+                            else
+                                ExecuteCommandAndOutputResult(line);
+                        }
+                    }
+                    else if (line.Contains(":else"))
+                    {
+                        if (!IsIfTrue)
+                        {
+                            line = line.Replace(Regex.Match(line, @":else\s*").Value, "");
+
+                            if (line.Contains(":"))
+                                GitCompilFile(line.Trim());
+                            else
+                                ExecuteCommandAndOutputResult(line);
+                        }
+
+                        IsIfTrue = false;
+                    }
+                    else
+                    {
+                        string variable = line.Split(' ').First().Replace(":", "");
+                        string value = string.Empty;
+
+                        GitMethod gitMethod = new GitMethod(line);
+
+                        if (!gitMethod.IsMethod())
+                        {
+                            (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
+                            string commandOutput = ExecuteCommandAndGetOutput(command);
+                            value = GetValueFromCommandOutput(commandOutput, range);
+                        }
+                        else
+                        {
+                            value = gitMethod.Start();
+                        }
+
+                        SetVariable(variable, value);
+
+                        DisplayText($"{variable} = {value} \n");
+                    }
+                }
+                else ExecuteCommandAndOutputResult(line);
             }
 
-            void ExecuteCommandAndOutputResult(string command)
-            {
-                ExecuteCommand(command);
-                dte2.ToolWindows.CommandWindow.OutputString(output);
-            }
+           
+        }
 
-            string ExecuteCommandAndGetOutput(string command)
-            {
-                ExecuteCommand(command);
-                return output;
-            }
+        #region ExecuteCommands
 
-            #endregion
+        private static string ExecuteCommand(string command)
+        {
+            CommandLine += command;
+            _process.StartInfo.Arguments = "/C " + CommandLine;
+            _process.Start();
+
+            _output = _process.StandardOutput.ReadToEnd();
+            _outputErrors = _process.StandardError.ReadToEnd();
+            CommandLine = CommandTitle + " ";
+
+            if (!string.IsNullOrEmpty(_outputErrors)) throw new Exception(_outputErrors);
+
+            return _output;
+        }
+
+        private static void ExecuteCommandAndOutputResult(string command)
+        {
+            ExecuteCommand(command);
+            DisplayText(_output);
+        }
+
+        private static string ExecuteCommandAndGetOutput(string command)
+        {
+            ExecuteCommand(command);
+            return _output;
+        }
+
+        #endregion
+
+        public static void DisplayText(string text)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            _dte2.ToolWindows.CommandWindow.OutputString(text);
         }
 
         public static Func<T, T, bool> ConvertToBinaryConditionOperator<T>(string op)
@@ -273,10 +292,8 @@ namespace GitFile
 
         private static string DeleteComments(string line)
         {
-            foreach (Match match in Regex.Matches(line, "<(.*?)>"))
-            {
-                line = line.Replace(match.Value, "");
-            }
+            Match match = Regex.Match(line, "<(.*?)>$");          
+            line = line.Replace(match.Value, "");
 
             return line;
         }

@@ -1,8 +1,10 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using GitFile.Methods;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
 using MiscUtil;
 using System;
 using System.Collections.Generic;
@@ -198,7 +200,29 @@ namespace GitFile
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!_isNeedIgnorOutput)
-                _dte2.ToolWindows.CommandWindow.OutputString(text);
+            {
+                var pane = GetPane("GitCompiler");
+
+                _dte2.ExecuteCommand("View.Output");
+                pane.OutputString(text);
+                pane.Activate();
+            }
+        }
+
+        private static OutputWindowPane GetPane(string title)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            OutputWindowPanes panes = _dte2.ToolWindows.OutputWindow.OutputWindowPanes;
+
+            try
+            {
+               return panes.Item(title);
+            }
+            catch (ArgumentException)
+            {
+               return panes.Add(title);
+            }
         }
 
         private static int ConvertStringToInt32(string value)

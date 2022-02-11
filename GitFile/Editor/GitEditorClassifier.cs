@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GitFile.Editor
 {
@@ -88,11 +89,65 @@ namespace GitFile.Editor
             // Title
             if (text.FirstOrDefault() == '.')
             {
-                IClassificationType titleClassifType = registry.GetClassificationType("z80title");
-                result.Add(new ClassificationSpan(
-                  new SnapshotSpan(line.Snapshot, new Span(line.Start, text.Length)),
-                  titleClassifType));
+                SetClassificationType("z80title",
+                    new SnapshotSpan(line.Snapshot, new Span(line.Start, text.Length)), ref result);
             }
+            // Comment
+            if (GitCompilerChecks.IsContainsComment(text))
+            {
+                var match = Regex.Match(text, @"<(.*?)>$");
+                SetClassificationType("z80comment",
+                       new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(match.Value), match.Value.Length)), ref result);
+            }
+            // Variable
+            if (GitCompilerChecks.IsContainsVariable(text))
+            {
+                foreach (Match match in Regex.Matches(text, @":(.*?)\s*="))
+                {
+                    var word = match.Value;
+
+                    if (word.Contains(":else"))
+                        word = word.Replace(":else", "");
+
+                    if (!word.Contains(":if"))
+                    {
+                        SetClassificationType("z80variable",
+                           new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(word), word.Length - 1)), ref result);
+                    }
+                }
+            }
+            // Variable in command
+            if (GitCompilerChecks.IsContainsVariablesInCommand(text))
+            {
+                int index = 0;
+                foreach (Match match in Regex.Matches(text, @"\{([^}]*)\}"))
+                {
+                    SetClassificationType("z80variable",
+                          new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(match.Value, index), match.Value.Length)), ref result);
+
+                    index += text.IndexOf(match.Value, index + match.Value.Length);
+                }
+            }
+            // if
+            if (text.Contains(":if"))
+            {
+                var word = ":if";
+                SetClassificationType("z80conditionalOperator",
+                       new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(word), word.Length)), ref result);
+            }
+            // else
+            else if (text.Contains(":else"))
+            {
+                var word = ":else";
+                SetClassificationType("z80conditionalOperator",
+                       new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(word), word.Length)), ref result);
+            }
+        }
+
+        private void SetClassificationType(string classificationTypeName, SnapshotSpan snapshotSpan, ref List<ClassificationSpan> result)
+        {
+            IClassificationType titleClassifType = registry.GetClassificationType(classificationTypeName);
+            result.Add(new ClassificationSpan(snapshotSpan, titleClassifType));
         }
 
         #endregion

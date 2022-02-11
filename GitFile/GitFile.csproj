@@ -51,7 +51,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Editor\Z80EditorCommentFormat.cs" />
+    <Compile Include="Editor\Z80EditorConditionalOperatorFormat.cs" />
     <Compile Include="Editor\Z80EditorTitleFormat.cs" />
+    <Compile Include="Editor\Z80EditorVariableFormat.cs" />
     <Compile Include="GitCommand.cs" />
     <Compile Include="GitCommandPackage.cs" />
     <Compile Include="GitCompiler.cs" />
@@ -59,6 +62,7 @@
     <Compile Include="Editor\GitEditorClassifierClassificationDefinition.cs" />
     <Compile Include="Editor\GitEditorClassifierFormat.cs" />
     <Compile Include="Editor\GitEditorClassifierProvider.cs" />
+    <Compile Include="GitCompilerChecks.cs" />
     <Compile Include="Methods\Increment.cs" />
     <Compile Include="Methods\GitMethod.cs" />
     <Compile Include="Methods\IGitMethod.cs" />

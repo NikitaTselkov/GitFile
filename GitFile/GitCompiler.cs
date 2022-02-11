@@ -54,15 +54,15 @@ namespace GitFile
         {
             if (!string.IsNullOrWhiteSpace(line))
             {
-                if (IsContainsComment(line))
+                if (GitCompilerChecks.IsContainsComment(line))
                 {
                     line = DeleteComments(line);
                 }
-                if (IsContainsVariables(line))
+                if (GitCompilerChecks.IsContainsVariablesInCommand(line))
                 {
                     line = ReplaceVariablesToValue(line);
                 }
-                if (IsNeedIgnorOutput(line))
+                if (GitCompilerChecks.IsNeedIgnorOutput(line))
                 {
                     line = line.Replace(Regex.Match(line, @"-->\s*Ignor").Value, "");
                     _isNeedIgnorOutput = true;
@@ -298,21 +298,6 @@ namespace GitFile
 
             command = command.Replace("=>", "").Replace("=", "");
             return (command, range);
-        }
-
-        private static bool IsContainsComment(string line)
-        {
-            return line.Contains("<") && line.Contains(">");
-        }
-
-        private static bool IsContainsVariables(string line)
-        {
-            return line.Contains("{") && line.Contains("}");
-        }
-
-        private static bool IsNeedIgnorOutput(string line)
-        {
-            return Regex.Match(line, @"-->\s*Ignor").Success;
         }
 
         private static string ReplaceVariablesToValue(string line)

@@ -315,7 +315,7 @@ namespace GitFile
 
         private static string DeleteComments(string line)
         {
-            Match match = Regex.Match(line, "<(.*?)>$");          
+            Match match = Regex.Match(line, "<!(.*?)>$");          
             line = line.Replace(match.Value, "");
 
             return line;

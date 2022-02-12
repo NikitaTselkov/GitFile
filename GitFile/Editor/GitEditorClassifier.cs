@@ -95,7 +95,7 @@ namespace GitFile.Editor
             // Comment
             if (GitCompilerChecks.IsContainsComment(text))
             {
-                var match = Regex.Match(text, @"<(.*?)>$");
+                var match = Regex.Match(text, @"<!(.*?)>$");
                 SetClassificationType("z80comment",
                        new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(match.Value), match.Value.Length)), ref result);
             }
@@ -127,6 +127,19 @@ namespace GitFile.Editor
 
                     index += text.IndexOf(match.Value, index + match.Value.Length);
                 }
+            }
+            // Ignore
+            if (GitCompilerChecks.IsNeedIgnorOutput(text))
+            {
+                var match = Regex.Match(text, @"-->\s*Ignor");
+                SetClassificationType("z80ignore",
+                              new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(match.Value), match.Value.Length)), ref result);
+            }
+            // Method
+            if (GitCompilerChecks.IsContainsMethod(text, out string methodName))
+            {
+                SetClassificationType("z80method",
+                              new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(methodName), methodName.Length)), ref result);
             }
             // if
             if (text.Contains(":if"))

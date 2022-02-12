@@ -6,16 +6,16 @@ using System.Windows.Media;
 namespace GitFile.Editor
 {
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "z80variable")]
-    [Name("z80variable")]
+    [ClassificationType(ClassificationTypeNames = "z80method")]
+    [Name("z80method")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
-    internal sealed class Z80EditorVariableFormat : ClassificationFormatDefinition
+    internal sealed class Z80EditorMethodFormat : ClassificationFormatDefinition
     {
-        public Z80EditorVariableFormat()
+        public Z80EditorMethodFormat()
         {
-            this.DisplayName = "Z80 Assembly Variable";
-            this.ForegroundColor = Colors.LightBlue;
+            this.DisplayName = "Z80 Assembly Method";
+            this.ForegroundColor = Color.FromRgb(216, 214, 142);
         }
     }
 }

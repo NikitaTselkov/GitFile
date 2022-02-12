@@ -36,8 +36,16 @@ namespace GitFile.Editor
         internal static ClassificationTypeDefinition Z80ConditionalOperatorDefinition;
         
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name("z80Variable")]
+        [Name("z80variable")]
         internal static ClassificationTypeDefinition Z80VariableDefinition;
+        
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("z80ignore")]
+        internal static ClassificationTypeDefinition Z80IgnoreDefinition;
+        
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("z80method")]
+        internal static ClassificationTypeDefinition Z80MethodDefinition;
 
         /// <summary>
         /// Defines the "GitEditorClassifier" classification type.

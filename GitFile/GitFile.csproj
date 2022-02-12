@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Editor\Z80EditorCommentFormat.cs" />
     <Compile Include="Editor\Z80EditorConditionalOperatorFormat.cs" />
+    <Compile Include="Editor\Z80EditorIgnoreFormat.cs" />
+    <Compile Include="Editor\Z80EditorMethodFormat.cs" />
     <Compile Include="Editor\Z80EditorTitleFormat.cs" />
     <Compile Include="Editor\Z80EditorVariableFormat.cs" />
     <Compile Include="GitCommand.cs" />

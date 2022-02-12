@@ -50,6 +50,14 @@ namespace GitFile
             }
         }
 
+        public static void SaveGitFile(string filePath)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var document = _dte2.Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == filePath);
+            document.Save();  
+        }
+
         private static void GitCompilFile(string line)
         {
             if (!string.IsNullOrWhiteSpace(line))

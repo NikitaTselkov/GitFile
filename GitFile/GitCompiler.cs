@@ -22,7 +22,7 @@ namespace GitFile
         private static string _commandTitle { get; set; }
         private static string _commandLine { get; set; }
 
-        private static Dictionary<string, string> _variables { get; set; } = new Dictionary<string, string>();
+        private static Dictionary<string, string> _variables { get; set; } = new Dictionary<string, string>() { { "Empty", string.Empty } };
 
         private static DTE _dte = Package.GetGlobalService(typeof(SDTE)) as DTE;
         private static DTE2 _dte2 = (DTE2)_dte;
@@ -133,23 +133,35 @@ namespace GitFile
                     else
                     {
                         string variable = line.Split(' ').First().Replace(":", "");
-                        string value = string.Empty;
 
-                        GitMethod gitMethod = new GitMethod(line);
-
-                        if (!gitMethod.IsMethod())
+                        if (variable != "Empty")
                         {
-                            (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
-                            string commandOutput = ExecuteCommandAndGetOutput(command);
-                            value = GetValueFromCommandOutput(commandOutput, range);
-                        }
-                        else
-                        {
-                            value = gitMethod.Start();
-                        }
+                            string value = string.Empty;
 
-                        SetVariable(variable, value);
-                        DisplayText($"{variable} = {value} \n");
+                            GitMethod gitMethod = new GitMethod(line);
+
+                            if (!gitMethod.IsMethod())
+                            {
+                                try
+                                {
+                                    (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
+                                    string commandOutput = ExecuteCommandAndGetOutput(command);
+                                    value = GetValueFromCommandOutput(commandOutput, range);
+                                }
+                                catch (Exception ex)
+                                {
+                                    DisplayText(ex.Message);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                value = gitMethod.Start();
+                            }
+
+                            SetVariable(variable, value);
+                            DisplayText($"{variable} = {value} \n");
+                        }
                     }
                 }
                 else ExecuteCommandAndOutputResult(line);
@@ -170,7 +182,8 @@ namespace GitFile
                 _outputErrors = _process.StandardError.ReadToEnd();
                 _commandLine = _commandTitle + " ";
 
-                if (!string.IsNullOrEmpty(_outputErrors)) throw new Exception(_outputErrors);
+                if (!string.IsNullOrEmpty(_outputErrors))
+                    DisplayText(_outputErrors);
             }
 
             return _output;
@@ -332,6 +345,8 @@ namespace GitFile
 
         private static System.Diagnostics.Process InitProcess()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var p = new System.Diagnostics.Process();
 
             p.StartInfo.UseShellExecute = false;
@@ -339,6 +354,7 @@ namespace GitFile
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.WorkingDirectory = Path.GetDirectoryName(_dte.Solution.FullName);
             return p;
         }
     }

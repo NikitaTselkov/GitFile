@@ -9,7 +9,7 @@ namespace GitFile
 {
     public static class GitCompilerChecks
     {
-        private static HashSet<string> _variables { get; set; } = new HashSet<string>();
+        private static HashSet<string> _variables { get; set; } = new HashSet<string>() { "Empty" };
 
         public static void SetVariable(string variable)
         {
@@ -23,7 +23,8 @@ namespace GitFile
 
         public static bool IsContainsVariable(string line)
         {
-            return Regex.Match(line, @":(.*?)\s*=").Success;
+            var match = Regex.Match(line, @":(.*?)\s*=");
+            return match.Success && !match.Value.Contains("Empty");
         }
         
         public static bool IsContainsVariablesInCommand(string line)

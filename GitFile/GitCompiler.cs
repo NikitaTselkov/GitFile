@@ -19,9 +19,10 @@ namespace GitFile
 {
     public static class GitCompiler
     {
-        private static string CommandTitle { get; set; }
-        private static string CommandLine { get; set; }
-        private static Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
+        private static string _commandTitle { get; set; }
+        private static string _commandLine { get; set; }
+
+        private static Dictionary<string, string> _variables { get; set; } = new Dictionary<string, string>();
 
         private static DTE _dte = Package.GetGlobalService(typeof(SDTE)) as DTE;
         private static DTE2 _dte2 = (DTE2)_dte;
@@ -77,14 +78,14 @@ namespace GitFile
                 }
                 if (line.FirstOrDefault() == '.')
                 {
-                    CommandTitle = line.Replace(".", "");
-                    CommandLine = CommandTitle + " ";
+                    _commandTitle = line.Replace(".", "");
+                    _commandLine = _commandTitle + " ";
                 }
                 else if (line.FirstOrDefault() == ':')
                 {
                     if (line.Contains(":if"))
                     {
-                        var match = Regex.Match(line, @"\((.*?)\s*(==|!=|>|>=|<|<=)\s*(.*?)\)");
+                        var match = Regex.Match(line, @"\((.*?)\s*(==|!=|>=|>|<=|<)\s*(.*?)\)");
 
                         string firstValue = GetVariableValue(match.Groups[1].Value);
                         string operatorValue = match.Groups[2].Value;
@@ -161,13 +162,13 @@ namespace GitFile
         {
             if (!string.IsNullOrWhiteSpace(command))
             { 
-                CommandLine += command;
-                _process.StartInfo.Arguments = "/C " + CommandLine;
+                _commandLine += command;
+                _process.StartInfo.Arguments = "/C " + _commandLine;
                 _process.Start();
 
                 _output = _process.StandardOutput.ReadToEnd();
                 _outputErrors = _process.StandardError.ReadToEnd();
-                CommandLine = CommandTitle + " ";
+                _commandLine = _commandTitle + " ";
 
                 if (!string.IsNullOrEmpty(_outputErrors)) throw new Exception(_outputErrors);
             }
@@ -250,18 +251,18 @@ namespace GitFile
 
         private static string GetVariableValue(string variable)
         {
-            if (Variables.Keys.Contains(variable))
-                return Variables[variable];
+            if (_variables.Keys.Contains(variable))
+                return _variables[variable];
             else
                 return variable;
         }
 
         private static void SetVariable(string variable, string value)
         {
-            if (Variables.Keys.Contains(variable))
-                Variables[variable] = value;
+            if (_variables.Keys.Contains(variable))
+                _variables[variable] = value;
             else
-                Variables.Add(variable, value);
+                _variables.Add(variable, value);
         }
 
         private static string GetValueFromCommandOutput(string commandOutput, int[] range)

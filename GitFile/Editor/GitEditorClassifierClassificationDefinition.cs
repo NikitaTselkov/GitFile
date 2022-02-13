@@ -46,6 +46,10 @@ namespace GitFile.Editor
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("z80method")]
         internal static ClassificationTypeDefinition Z80MethodDefinition;
+        
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("z80range")]
+        internal static ClassificationTypeDefinition Z80RangeDefinition;
 
         /// <summary>
         /// Defines the "GitEditorClassifier" classification type.

@@ -86,6 +86,9 @@ namespace GitFile.Editor
         {
             var text = line.GetText().Trim();
 
+            SetClassificationType("GitEditorClassifier",
+                    new SnapshotSpan(line.Snapshot, new Span(line.Start, text.Length)), ref result);
+
             // Title
             if (text.FirstOrDefault() == '.')
             {
@@ -113,6 +116,8 @@ namespace GitFile.Editor
                     {
                         SetClassificationType("z80variable",
                            new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(word), word.Length - 1)), ref result);
+
+                        GitCompilerChecks.SetVariable(new string(word.Skip(1).TakeWhile(t => t != ' ').ToArray()));
                     }
                 }
             }
@@ -128,6 +133,23 @@ namespace GitFile.Editor
                     index += text.IndexOf(match.Value, index + match.Value.Length);
                 }
             }
+            // Variable in "if"
+            if (GitCompilerChecks.IsExistsVariables(text, out (string first, string second) variables))
+            {
+                int index = 0;
+
+                if (variables.first != string.Empty)
+                {
+                    SetClassificationType("z80variable",
+                               new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(variables.first), variables.first.Length)), ref result);
+
+                    index += text.IndexOf(variables.first) + variables.first.Length;
+                }
+
+                if (variables.second != string.Empty)
+                    SetClassificationType("z80variable",
+                               new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(variables.second, index), variables.second.Length)), ref result);
+            }
             // Ignore
             if (GitCompilerChecks.IsNeedIgnorOutput(text))
             {
@@ -140,6 +162,13 @@ namespace GitFile.Editor
             {
                 SetClassificationType("z80method",
                               new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(methodName), methodName.Length)), ref result);
+            }
+            // Range
+            if (GitCompilerChecks.IsContainsRange(text))
+            {
+                var match = Regex.Match(text, @"=>\s*\((.*?)\)");
+                SetClassificationType("z80range",
+                       new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(match.Value), match.Value.Length)), ref result);
             }
             // if
             if (text.Contains(":if"))

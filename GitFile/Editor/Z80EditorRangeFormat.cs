@@ -6,16 +6,16 @@ using System.Windows.Media;
 namespace GitFile.Editor
 {
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "z80ignore")]
-    [Name("z80ignore")]
+    [ClassificationType(ClassificationTypeNames = "z80range")]
+    [Name("z80range")]
     [UserVisible(true)]
     [Order(Before = Priority.Default)]
-    internal sealed class Z80EditorIgnoreFormat : ClassificationFormatDefinition
+    internal sealed class Z80EditorRangeFormat : ClassificationFormatDefinition
     {
-        public Z80EditorIgnoreFormat()
+        public Z80EditorRangeFormat()
         {
-            this.DisplayName = "Z80 Assembly Ignore";
-            this.ForegroundColor = Color.FromRgb(223, 105, 113);
+            this.DisplayName = "Z80 Assembly Range";
+            this.ForegroundColor = Color.FromRgb(216, 214, 142);
         }
     }
 }

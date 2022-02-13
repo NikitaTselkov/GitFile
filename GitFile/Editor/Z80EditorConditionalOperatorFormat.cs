@@ -15,7 +15,7 @@ namespace GitFile.Editor
         public Z80EditorConditionalOperatorFormat()
         {
             this.DisplayName = "Z80 Assembly Conditional Operator";
-            this.ForegroundColor = Colors.MediumVioletRed;
+            this.ForegroundColor = Color.FromRgb(192, 108, 202);
         }
     }
 }

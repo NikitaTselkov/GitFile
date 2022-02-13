@@ -15,7 +15,7 @@ namespace GitFile.Editor
         public Z80EditorCommentFormat()
         {
             this.DisplayName = "Z80 Assembly Comment";
-            this.ForegroundColor = Colors.LightGreen;
+            this.ForegroundColor = Color.FromRgb(145, 187, 112);
         }
     }
 }

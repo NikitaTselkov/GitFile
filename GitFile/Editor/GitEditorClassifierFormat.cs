@@ -22,6 +22,7 @@ namespace GitFile.Editor
         public GitEditorClassifierFormat()
         {
             this.DisplayName = "GitEditorClassifier";
+            this.ForegroundColor = Color.FromRgb(150, 158, 174);
         }
     }
 }

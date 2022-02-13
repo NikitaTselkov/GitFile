@@ -16,7 +16,7 @@ namespace GitFile.Editor
         {
             this.DisplayName = "Z80 Assembly Title";
             this.IsBold = true;
-            this.ForegroundColor = Colors.Orange;
+            this.ForegroundColor = Color.FromRgb(209, 153, 93);
         }
     }
 }

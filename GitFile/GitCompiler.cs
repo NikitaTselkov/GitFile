@@ -36,7 +36,7 @@ namespace GitFile
         {
             string line;
 
-            using (StreamReader sr = new StreamReader(filePath))
+            using (StreamReader sr = new StreamReader(filePath, Encoding.Default))
             {
                 try
                 {
@@ -47,7 +47,11 @@ namespace GitFile
                         _isNeedIgnorOutput = false;
                     }
                 }
-                catch (Exception ex) { DisplayText(ex.Message); }
+                catch (Exception ex) 
+                {
+                    _isNeedIgnorOutput = false;
+                    DisplayText(ex.Message);
+                }
             }
         }
 
@@ -183,7 +187,14 @@ namespace GitFile
                 _commandLine = _commandTitle + " ";
 
                 if (!string.IsNullOrEmpty(_outputErrors))
+                {
                     DisplayText(_outputErrors);
+
+                    if (_outputErrors.StartsWith("git:"))
+                    {
+                        throw new Exception("Execution is suspended!");
+                    }
+                }
             }
 
             return _output;

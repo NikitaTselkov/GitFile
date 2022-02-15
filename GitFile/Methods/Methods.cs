@@ -11,6 +11,7 @@ namespace GitFile.Methods
         Null,
         Increment,
         Skip,
-        Take
+        Take,
+        String
     }
 }

@@ -71,6 +71,7 @@
     <Compile Include="Methods\IGitMethod.cs" />
     <Compile Include="Methods\Methods.cs" />
     <Compile Include="Methods\Skip.cs" />
+    <Compile Include="Methods\String.cs" />
     <Compile Include="Methods\Take.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

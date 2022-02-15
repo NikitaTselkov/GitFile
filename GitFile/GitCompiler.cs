@@ -146,17 +146,9 @@ namespace GitFile
 
                             if (!gitMethod.IsMethod())
                             {
-                                try
-                                {
-                                    (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
-                                    string commandOutput = ExecuteCommandAndGetOutput(command);
-                                    value = GetValueFromCommandOutput(commandOutput, range);
-                                }
-                                catch (Exception ex)
-                                {
-                                    DisplayText(ex.Message);
-                                    return;
-                                }
+                                (string command, int[] range) = GetCommandAndCountWordsFromLine(line);
+                                string commandOutput = ExecuteCommandAndGetOutput(command);
+                                value = GetValueFromCommandOutput(commandOutput, range);
                             }
                             else
                             {

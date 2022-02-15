@@ -84,13 +84,13 @@ namespace GitFile.Editor
 
         private void ProcessLine(ITextSnapshotLine line, ref List<ClassificationSpan> result)
         {
-            var text = line.GetText().Trim();
+            var text = line.GetText();
 
             SetClassificationType("GitEditorClassifier",
                     new SnapshotSpan(line.Snapshot, new Span(line.Start, text.Length)), ref result);
 
             // Title
-            if (text.FirstOrDefault() == '.')
+            if (text.Trim().FirstOrDefault() == '.')
             {
                 SetClassificationType("z80title",
                     new SnapshotSpan(line.Snapshot, new Span(line.Start, text.Length)), ref result);

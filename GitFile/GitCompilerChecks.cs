@@ -32,9 +32,9 @@ namespace GitFile
             return line.Contains("{") && line.Contains("}");
         }
 
-        public static bool IsNeedIgnorOutput(string line)
+        public static bool IsNeedIgnoreOutput(string line)
         {
-            return Regex.Match(line, @"-->\s*Ignor").Success;
+            return Regex.Match(line, @"-->\s*Ignore").Success;
         }
 
         public static bool IsContainsRange(string line)

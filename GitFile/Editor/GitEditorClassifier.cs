@@ -151,9 +151,9 @@ namespace GitFile.Editor
                                new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(variables.second, index), variables.second.Length)), ref result);
             }
             // Ignore
-            if (GitCompilerChecks.IsNeedIgnorOutput(text))
+            if (GitCompilerChecks.IsNeedIgnoreOutput(text))
             {
-                var match = Regex.Match(text, @"-->\s*Ignor");
+                var match = Regex.Match(text, @"-->\s*Ignore");
                 SetClassificationType("z80ignore",
                               new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(match.Value), match.Value.Length)), ref result);
             }

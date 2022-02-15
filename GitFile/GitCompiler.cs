@@ -30,7 +30,7 @@ namespace GitFile
         private static string _outputErrors;
         private static System.Diagnostics.Process _process = InitProcess();
         private static bool _isIfTrue = false;
-        private static bool _isNeedIgnorOutput = false;
+        private static bool _isNeedIgnoreOutput = false;
 
         public static void StartGitFile(string filePath)
         {
@@ -44,12 +44,12 @@ namespace GitFile
                     {
                         line = sr.ReadLine().Trim();
                         GitCompilFile(line);
-                        _isNeedIgnorOutput = false;
+                        _isNeedIgnoreOutput = false;
                     }
                 }
                 catch (Exception ex) 
                 {
-                    _isNeedIgnorOutput = false;
+                    _isNeedIgnoreOutput = false;
                     DisplayText(ex.Message);
                 }
             }
@@ -75,10 +75,10 @@ namespace GitFile
                 {
                     line = ReplaceVariablesToValue(line);
                 }
-                if (GitCompilerChecks.IsNeedIgnorOutput(line))
+                if (GitCompilerChecks.IsNeedIgnoreOutput(line))
                 {
-                    line = line.Replace(Regex.Match(line, @"-->\s*Ignor").Value, "");
-                    _isNeedIgnorOutput = true;
+                    line = line.Replace(Regex.Match(line, @"-->\s*Ignore").Value, "");
+                    _isNeedIgnoreOutput = true;
                 }
                 if (line.FirstOrDefault() == '.')
                 {
@@ -232,7 +232,7 @@ namespace GitFile
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (!_isNeedIgnorOutput)
+            if (!_isNeedIgnoreOutput)
             {
                 var pane = GetPane("GitCompiler");
 

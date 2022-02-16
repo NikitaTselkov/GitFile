@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="GitFile.4048734b-9415-458f-bf9f-47723353c65e" Version="1.0" Language="en-US" Publisher="Никита Целков" />
+        <Identity Id="GitFile.4048734b-9415-458f-bf9f-47723353c65e" Version="1.0" Language="en-US" Publisher="Nikita Tselkov" />
         <DisplayName>GitFile</DisplayName>
         <Description xml:space="preserve">An extension for Visual Studio that allows you to create and execute a file with the git extension.An extension for Visual Studio that allows you to create and execute a file with the git extension</Description>
         <Icon>GitIcon7.png</Icon>

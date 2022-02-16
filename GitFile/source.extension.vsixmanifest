@@ -3,7 +3,10 @@
     <Metadata>
         <Identity Id="GitFile.4048734b-9415-458f-bf9f-47723353c65e" Version="1.0" Language="en-US" Publisher="Никита Целков" />
         <DisplayName>GitFile</DisplayName>
-        <Description>Empty VSIX Project.</Description>
+        <Description xml:space="preserve">An extension for Visual Studio that allows you to create and execute a file with the git extension.An extension for Visual Studio that allows you to create and execute a file with the git extension</Description>
+        <Icon>GitIcon7.png</Icon>
+        <PreviewImage>GitIcon7.png</PreviewImage>
+        <Tags>git Git git-file Git-file</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />

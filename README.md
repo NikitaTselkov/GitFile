@@ -3,17 +3,14 @@
 Расширение было разработано для ускорения процесса разработки и упрощения работы с git.
 
 # Установка
-Установка последней версии через NuGet
+Для установки расширения потребуется перейти по пути `Расширения -> Управление расширениями -> В сети` и в поиске ввести GitFile.
 
-```C#
-PM> Install-Package GitFile
-```
 # Применение
 После установки расширения в окне добавления нового элемента для проекта появится новый элемент GitFile.git.
 GitFile поддерживает все расширения для git которые установлены на компьютере.
 
 ## Содержимое файла
-![Пример](https://github.com/NikitaTselkov/TestGitFile/blob/master/Code.PNG?raw=true)
+![Пример](https://github.com/NikitaTselkov/GitFile/blob/master/GitImages/Code.PNG?raw=true)
 
 `.git` - При выполнении файла ‘git’ будет добавляться в начале каждой исполняемой строки.
 
@@ -32,7 +29,7 @@ GitFile поддерживает все расширения для git кото
 `tag -a v{version} -m "my version {version}" <! Adds a tag>` - Выполняется git tag -a v{version} -m "my version {version}". `{version}` заменяется на её значение. 
 
 ## Результат выполнения
-![Пример](https://github.com/NikitaTselkov/TestGitFile/blob/master/Output.PNG?raw=true)
+![Пример](https://github.com/NikitaTselkov/GitFile/blob/master/GitImages/Output.PNG?raw=true)
 
 ## Запуск файла
 Файл можно запустить 3 способами:
@@ -60,4 +57,4 @@ GitFile поддерживает все расширения для git кото
 | String(value) | Возвращает параметр `value` | (MyValue) | MyValue |
 | Skip(value, count) | Пропускает `count` символов | (text, 2) | xt |
 | Take(value, count) | Берет `count` символов | (text, 2) | te |
-| Increment(version, params) | Увеличивает `version` на 1, кол-во `params` зависит от `version` | (1.2, 2) | 2.0 |
+| Increment(value, params) | Увеличивает `value` на 1, кол-во `params` зависит от `value` | (1.2, 2) | 2.0 |

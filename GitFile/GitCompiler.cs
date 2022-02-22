@@ -50,7 +50,7 @@ namespace GitFile
                 catch (Exception ex) 
                 {
                     _isNeedIgnoreOutput = false;
-                    DisplayText(ex.Message);
+                    DisplayText(ex.InnerException?.Message ?? ex.Message);
                 }
             }
         }

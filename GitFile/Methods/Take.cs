@@ -15,6 +15,11 @@ namespace GitFile.Methods
         public Take(string param)
         {
             Params = param.Split(',').ToList();
+
+            if (Params.FirstOrDefault() == "") throw new ArgumentNullException("Take parameters cannot be empty");
+            if (Params.Count <= 1 || Params.Count > 2) throw new FormatException("Take parameters had the wrong format");
+            if (Params.Last().Any(a => char.IsLetter(a))) throw new FormatException("Take parameters had the wrong format");
+
             Result = string.Join("", Params.FirstOrDefault()?.Take(Convert.ToInt32(Params.LastOrDefault())));
         }
     }

@@ -57,6 +57,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Methods\IncrementTests.cs" />
+    <Compile Include="Methods\SkipTests.cs" />
+    <Compile Include="Methods\TakeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

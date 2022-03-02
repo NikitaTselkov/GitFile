@@ -77,7 +77,7 @@ namespace GitFile.Editor
                     line = snapshot.GetLineFromPosition(line.EndIncludingLineBreak + 1);
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex) { }
 
             return result;
         }
@@ -130,7 +130,7 @@ namespace GitFile.Editor
                     SetClassificationType("z80variable",
                           new SnapshotSpan(line.Snapshot, new Span(line.Start + text.IndexOf(match.Value, index), match.Value.Length)), ref result);
 
-                    index += text.IndexOf(match.Value, index + match.Value.Length);
+                    index = text.IndexOf(match.Value, index) + match.Value.Length;
                 }
             }
             // Variable in "if"

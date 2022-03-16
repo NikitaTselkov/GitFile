@@ -74,7 +74,7 @@ namespace GitFile
 
             if (projectItem != null)
             {
-                var name = projectItem.Document.Name;
+                var name = projectItem.Name;
                 var omc = (OleMenuCommand)sender;
 
                 if (name.Contains(".git"))
@@ -143,7 +143,7 @@ namespace GitFile
 
             if (projectItem != null)
             {
-                var path = projectItem.Document.FullName;
+                var path = projectItem.Name;
                 GitCompiler.SaveGitFile(path);
                 GitCompiler.StartGitFile(path);
             }

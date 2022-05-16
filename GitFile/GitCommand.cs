@@ -145,7 +145,7 @@ namespace GitFile
             {
                 var path = projectItem.Properties.Item("FullPath").Value.ToString();
                 GitCompiler.SaveGitFile(path);
-                GitCompiler.StartGitFile(path);
+                GitCompiler.StartGitFileAsync(path);
             }
         }
 
@@ -154,7 +154,7 @@ namespace GitFile
             foreach (var filePath in Directory.EnumerateFiles(path, "*.git", SearchOption.AllDirectories))
             {
                 GitCompiler.SaveGitFile(filePath);
-                GitCompiler.StartGitFile(filePath);
+                GitCompiler.StartGitFileAsync(filePath);
             }
         }
 

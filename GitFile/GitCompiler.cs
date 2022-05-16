@@ -1,19 +1,15 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using GitFile.Methods;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TextManager.Interop;
 using MiscUtil;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GitFile
 {
@@ -32,27 +28,30 @@ namespace GitFile
         private static bool _isIfTrue = false;
         private static bool _isNeedIgnoreOutput = false;
 
-        public static void StartGitFile(string filePath)
+        public static async System.Threading.Tasks.Task StartGitFileAsync(string filePath)
         {
             string line;
 
-            using (StreamReader sr = new StreamReader(filePath, Encoding.Default))
+            await System.Threading.Tasks.Task.Run(() =>
             {
-                try
+                using (StreamReader sr = new StreamReader(filePath, Encoding.Default))
                 {
-                    while (!sr.EndOfStream)
+                    try
                     {
-                        line = sr.ReadLine().Trim();
-                        GitCompilFile(line);
+                        while (!sr.EndOfStream)
+                        {
+                            line = sr.ReadLine().Trim();
+                            GitCompilFile(line);
+                            _isNeedIgnoreOutput = false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
                         _isNeedIgnoreOutput = false;
+                        DisplayTextAsync(ex.InnerException?.Message ?? ex.Message);
                     }
                 }
-                catch (Exception ex) 
-                {
-                    _isNeedIgnoreOutput = false;
-                    DisplayText(ex.InnerException?.Message ?? ex.Message);
-                }
-            }
+            });
         }
 
         public static void SaveGitFile(string filePath)
@@ -156,7 +155,7 @@ namespace GitFile
                             }
 
                             SetVariable(variable, value);
-                            DisplayText($"{variable} = {value} \n");
+                            DisplayTextAsync($"{variable} = {value} \n");
                         }
                     }
                 }
@@ -180,7 +179,7 @@ namespace GitFile
 
                 if (!string.IsNullOrEmpty(_outputErrors))
                 {
-                    DisplayText(_outputErrors);
+                    DisplayTextAsync(_outputErrors);
 
                     if (_outputErrors.StartsWith("git:"))
                     {
@@ -195,7 +194,7 @@ namespace GitFile
         private static void ExecuteCommandAndOutputResult(string command)
         {
             ExecuteCommand(command);
-            DisplayText(_output);
+            DisplayTextAsync(_output);
         }
 
         private static string ExecuteCommandAndGetOutput(string command)
@@ -220,9 +219,9 @@ namespace GitFile
             }
         }
 
-        private static void DisplayText(string text)
+        private static async void DisplayTextAsync(string text)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             if (!_isNeedIgnoreOutput)
             {

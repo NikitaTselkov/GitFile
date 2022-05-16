@@ -143,7 +143,7 @@ namespace GitFile
 
             if (projectItem != null)
             {
-                var path = projectItem.Name;
+                var path = projectItem.Properties.Item("FullPath").Value.ToString();
                 GitCompiler.SaveGitFile(path);
                 GitCompiler.StartGitFile(path);
             }

@@ -60,7 +60,7 @@ namespace GitFile
             ThreadHelper.ThrowIfNotOnUIThread();
 
             var document = _dte2.Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName.ToLower() == filePath.ToLower());
-            document.Save();  
+            document?.Save();  
         }
 
         private static void GitCompilFile(string line)

@@ -50,6 +50,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GitIcon7.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="ItemTemplates\GitFile.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

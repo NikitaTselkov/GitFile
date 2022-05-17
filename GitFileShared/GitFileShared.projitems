@@ -33,11 +33,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Methods\Take.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)GitIcon7.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)VSPackage.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

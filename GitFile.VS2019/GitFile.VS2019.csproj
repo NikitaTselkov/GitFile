@@ -56,6 +56,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GitIcon7.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="ItemTemplates\GitFile.zip">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

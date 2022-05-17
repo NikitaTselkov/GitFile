@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>868cb020-1f53-4a03-83c2-345e76b39010</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>GitFileShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\GitEditorClassifier.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\GitEditorClassifierClassificationDefinition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\GitEditorClassifierFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\GitEditorClassifierProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\Z80EditorCommentFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\Z80EditorConditionalOperatorFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\Z80EditorIgnoreFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\Z80EditorMethodFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\Z80EditorRangeFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\Z80EditorTitleFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Editor\Z80EditorVariableFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GitCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GitCommandPackage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GitCompiler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GitCompilerChecks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\GitMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\IGitMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Increment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Methods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Skip.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\String.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Methods\Take.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)GitIcon7.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)VSPackage.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

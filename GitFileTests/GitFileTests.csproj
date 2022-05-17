@@ -65,9 +65,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitFile\GitFile.csproj">
-      <Project>{417CED3C-7723-4FB9-BAF9-80D1649B84A1}</Project>
-      <Name>GitFile</Name>
+    <ProjectReference Include="..\GitFile.VS2019\GitFile.VS2019.csproj">
+      <Project>{417ced3c-7723-4fb9-baf9-80d1649b84a1}</Project>
+      <Name>GitFile.VS2019</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

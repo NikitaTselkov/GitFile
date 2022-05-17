@@ -3,11 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32106.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFile", "GitFile\GitFile.csproj", "{417CED3C-7723-4FB9-BAF9-80D1649B84A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFile.VS2019", "GitFile.VS2019\GitFile.VS2019.csproj", "{417CED3C-7723-4FB9-BAF9-80D1649B84A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFileTests", "GitFileTests\GitFileTests.csproj", "{DE950449-F1E2-4E26-833D-5002965F9F92}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "GitFileShared", "GitFileShared\GitFileShared.shproj", "{868CB020-1F53-4A03-83C2-345E76B39010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFile.VS2022", "GitFile.VS2022\GitFile.VS2022.csproj", "{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		GitFileShared\GitFileShared.projitems*{417ced3c-7723-4fb9-baf9-80d1649b84a1}*SharedItemsImports = 4
+		GitFileShared\GitFileShared.projitems*{4a02dbca-23ac-4517-b41f-82f97c01a8fd}*SharedItemsImports = 4
+		GitFileShared\GitFileShared.projitems*{868cb020-1f53-4a03-83c2-345e76b39010}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -21,6 +30,10 @@ Global
 		{DE950449-F1E2-4E26-833D-5002965F9F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE950449-F1E2-4E26-833D-5002965F9F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE950449-F1E2-4E26-833D-5002965F9F92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

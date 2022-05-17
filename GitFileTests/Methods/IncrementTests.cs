@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GitFile.Methods;
+using GitFileShared.Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GitFile.Methods.Tests
+namespace GitFileShared.Methods.Tests
 {
     [TestClass()]
     public class IncrementTests

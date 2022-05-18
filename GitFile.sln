@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32106.194
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32505.426
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFile.VS2019", "GitFile.VS2019\GitFile.VS2019.csproj", "{417CED3C-7723-4FB9-BAF9-80D1649B84A1}"
 EndProject
@@ -12,33 +12,47 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFile.VS2022", "GitFile.VS2022\GitFile.VS2022.csproj", "{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		GitFileShared\GitFileShared.projitems*{417ced3c-7723-4fb9-baf9-80d1649b84a1}*SharedItemsImports = 4
-		GitFileShared\GitFileShared.projitems*{4a02dbca-23ac-4517-b41f-82f97c01a8fd}*SharedItemsImports = 4
-		GitFileShared\GitFileShared.projitems*{868cb020-1f53-4a03-83c2-345e76b39010}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{417CED3C-7723-4FB9-BAF9-80D1649B84A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{417CED3C-7723-4FB9-BAF9-80D1649B84A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{417CED3C-7723-4FB9-BAF9-80D1649B84A1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{417CED3C-7723-4FB9-BAF9-80D1649B84A1}.Debug|x86.Build.0 = Debug|Any CPU
 		{417CED3C-7723-4FB9-BAF9-80D1649B84A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{417CED3C-7723-4FB9-BAF9-80D1649B84A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{417CED3C-7723-4FB9-BAF9-80D1649B84A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{417CED3C-7723-4FB9-BAF9-80D1649B84A1}.Release|x86.Build.0 = Release|Any CPU
 		{DE950449-F1E2-4E26-833D-5002965F9F92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE950449-F1E2-4E26-833D-5002965F9F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE950449-F1E2-4E26-833D-5002965F9F92}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DE950449-F1E2-4E26-833D-5002965F9F92}.Debug|x86.Build.0 = Debug|Any CPU
 		{DE950449-F1E2-4E26-833D-5002965F9F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE950449-F1E2-4E26-833D-5002965F9F92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE950449-F1E2-4E26-833D-5002965F9F92}.Release|x86.ActiveCfg = Release|Any CPU
+		{DE950449-F1E2-4E26-833D-5002965F9F92}.Release|x86.Build.0 = Release|Any CPU
 		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Debug|x86.ActiveCfg = Debug|x86
+		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Debug|x86.Build.0 = Debug|x86
 		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Release|x86.ActiveCfg = Release|x86
+		{4A02DBCA-23AC-4517-B41F-82F97C01A8FD}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D1460F4B-EA56-467E-BF9A-1E1BEC12F9D5}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		GitFileShared\GitFileShared.projitems*{417ced3c-7723-4fb9-baf9-80d1649b84a1}*SharedItemsImports = 4
+		GitFileShared\GitFileShared.projitems*{4a02dbca-23ac-4517-b41f-82f97c01a8fd}*SharedItemsImports = 4
+		GitFileShared\GitFileShared.projitems*{868cb020-1f53-4a03-83c2-345e76b39010}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
